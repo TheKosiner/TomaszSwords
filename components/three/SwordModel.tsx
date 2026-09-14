@@ -4,6 +4,7 @@ import { useMemo, useRef } from "react";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 import { Html } from "@react-three/drei";
+import { PART } from "@/lib/sword-parts";
 import type { Group, Mesh, MeshStandardMaterial } from "three";
 
 /* ------------------------------------------------------------------ */
@@ -156,14 +157,14 @@ function PartLabel({
     <Html
       position={position}
       center
-      distanceFactor={11}
+      distanceFactor={14}
       zIndexRange={[20, 0]}
       style={{ pointerEvents: "none" }}
     >
       <div
         className={[
-          "hidden w-52 transition-all duration-500 md:block",
-          align === "left" ? "text-left -translate-x-24" : "text-right translate-x-24",
+          "hidden w-56 transition-all duration-500 lg:block",
+          align === "left" ? "text-left -translate-x-28" : "text-right translate-x-28",
           visible ? "opacity-100 blur-0" : "opacity-0 blur-sm",
         ].join(" ")}
       >
@@ -173,10 +174,12 @@ function PartLabel({
             align === "left" ? "from-transparent to-gold-500" : "from-gold-500 to-transparent",
           ].join(" ")}
         />
-        <p className="mt-2 font-display text-[13px] uppercase tracking-[0.3em] text-gold-400">
-          {title}
-        </p>
-        <p className="mt-1 text-[11px] leading-snug text-parchment-dim">{desc}</p>
+        <div className="mt-2 rounded-xl border border-gold-600/35 bg-forge-950/90 px-4 py-2.5 shadow-[0_10px_40px_-8px_rgba(0,0,0,0.9)] backdrop-blur-md">
+          <p className="font-display text-[14px] uppercase leading-none tracking-[0.24em] text-gold-300">
+            {title}
+          </p>
+          <p className="mt-2 text-[12.5px] leading-snug text-parchment">{desc}</p>
+        </div>
       </div>
     </Html>
   );
@@ -260,16 +263,16 @@ export function SwordModel({
           <meshStandardMaterial {...darkSteelProps} transparent opacity={0.25} />
         </mesh>
         <PartLabel
-          position={[0.55, -BLADE_LEN * 0.5, 0]}
+          position={[0.55, -BLADE_LEN * 0.66, 0]}
           title="Głownia"
-          desc="Hartowana stal sprężynowa. Zbrocze odbiera masę ze środka, zostawiając sztywność przy krawędziach."
+          desc={PART.glownia.desc}
           visible={exploded}
           align="right"
         />
         <PartLabel
-          position={[0.5, 1.15, 0]}
+          position={[0.5, 0.35, 0]}
           title="Trzpień"
-          desc="Przedłużenie głowni biegnące przez całą rękojeść, nitowane na głowicy."
+          desc={PART.trzpien.desc}
           visible={exploded}
           align="right"
         />
@@ -283,7 +286,7 @@ export function SwordModel({
         <PartLabel
           position={[-1.25, 0, 0]}
           title="Jelec"
-          desc="Chroni dłoń i pozwala wiązać broń przeciwnika. Przekrój ósemkowy, ramiona przewężone."
+          desc={PART.jelec.desc}
           visible={exploded}
         />
       </group>
@@ -303,7 +306,7 @@ export function SwordModel({
         <PartLabel
           position={[0.45, 0, 0]}
           title="Rękojeść"
-          desc="Drewniany rdzeń kryty skórą i owinięty rzemieniem – chwyt nie ślizga się w dłoni."
+          desc={PART.rekojesc.desc}
           visible={exploded}
           align="right"
         />
@@ -326,9 +329,9 @@ export function SwordModel({
           </mesh>
         ))}
         <PartLabel
-          position={[-0.5, 0.05, 0]}
+          position={[-0.5, -0.3, 0]}
           title="Głowica"
-          desc="Przeciwwaga przesuwająca punkt równowagi do dłoni. Bez niej miecz ciągnąłby rękę w przód."
+          desc={PART.glowica.desc}
           visible={exploded}
         />
       </group>
@@ -368,7 +371,7 @@ export function SwordModel({
         <PartLabel
           position={[0.7, 4.2, 0]}
           title="Pochwa"
-          desc="Drewniany rdzeń kryty skórą, stalowy trzewik i pas zawiesia z okuciami."
+          desc={PART.pochwa.desc}
           visible={exploded}
           align="right"
         />

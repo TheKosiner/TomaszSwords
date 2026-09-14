@@ -1,15 +1,29 @@
 "use client";
 
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Environment, Lightformer, Sparkles, AdaptiveDpr } from "@react-three/drei";
 import { Suspense, useRef, useState } from "react";
 import SwordModel from "./SwordModel";
 
+const BASE_DISTANCE = 27;
+
+/** Płynne dojeżdżanie kamery do zadanego przybliżenia. */
+function CameraRig({ zoom }: { zoom: number }) {
+  const { camera } = useThree();
+  useFrame((_, delta) => {
+    const target = BASE_DISTANCE / zoom;
+    camera.position.z += (target - camera.position.z) * Math.min(delta * 4.5, 1);
+  });
+  return null;
+}
+
 export function SwordScene({
   exploded,
+  zoom = 1,
   onPointerMoveNormalized,
 }: {
   exploded: boolean;
+  zoom?: number;
   onPointerMoveNormalized?: (x: number, y: number) => void;
 }) {
   const pointer = useRef({ x: 0, y: 0 });
@@ -22,7 +36,7 @@ export function SwordScene({
       className="!absolute inset-x-0 top-0 bottom-16 lg:bottom-28"
       dpr={[1, 2]}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
-      camera={{ position: [0, 0, 27], fov: 32 }}
+      camera={{ position: [0, 0, BASE_DISTANCE], fov: 32 }}
       onCreated={({ gl }) => {
         gl.toneMappingExposure = 1.05;
       }}
@@ -66,6 +80,7 @@ export function SwordScene({
           color="#ffb060"
         />
 
+        <CameraRig zoom={zoom} />
         <SwordModel exploded={exploded} pointer={pointer} />
         <AdaptiveDpr pixelated />
       </Suspense>
