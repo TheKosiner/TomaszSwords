@@ -29,33 +29,42 @@ npm run build   # eksport statyczny do out/
 
 ## Deploy na GitHub Pages
 
-W repo jest gotowy workflow `.github/workflows/deploy.yml`. Jednorazowa
-konfiguracja:
+Workflow `.github/workflows/deploy.yml` przy każdym pushu na `main` buduje
+stronę i **wypycha gotowy katalog `out/` na gałąź `gh-pages`**. Pages serwuje
+tę gałąź jako zwykłe pliki — deploy nie przechodzi przez środowisko
+`github-pages`, więc nie zależy od reguł ochrony środowiska.
 
-1. **Settings → Pages → Build and deployment → Source: `GitHub Actions`**
-   (nie „Deploy from a branch”).
-2. Zmerguj tę gałąź do `main` — workflow odpala się na push do `main`
-   lub `master`, można go też uruchomić ręcznie (`Actions → Run workflow`).
-3. Po przejściu builda strona stoi pod
-   `https://thekosiner.github.io/TomaszSwords/`.
+Jednorazowa konfiguracja (po pierwszym udanym przebiegu workflow):
+
+**Settings → Pages → Build and deployment**
+- Source: **Deploy from a branch**
+- Branch: **`gh-pages`** / **`(root)`** → Save
+
+Strona staje pod `https://thekosiner.github.io/TomaszSwords/`.
+
+Gałąź `gh-pages` jest nadpisywana przy każdym deployu (force push) — trzyma
+wyłącznie wygenerowany HTML, nigdy nie edytuje się jej ręcznie.
+
+### Własna domena
+
+W kroku „Build statyczny" w workflow zmień dwie zmienne:
+
+```yaml
+NEXT_PUBLIC_BASE_PATH: ""                  # domena bez podkatalogu
+NEXT_PUBLIC_SITE_URL: https://twojadomena.pl
+```
+
+i dodaj domenę w Settings → Pages (GitHub sam utworzy plik `CNAME`
+na gałęzi `gh-pages`).
 
 ### Dlaczego `basePath`
 
 GitHub Pages serwuje projekt w podkatalogu `/<nazwa-repo>`, więc wszystkie
-ścieżki muszą dostać prefiks. Workflow bierze go automatycznie z akcji
-`actions/configure-pages` i podaje jako `NEXT_PUBLIC_BASE_PATH`:
-
-```
-NEXT_PUBLIC_BASE_PATH=/TomaszSwords npm run build
-```
-
-Po podpięciu własnej domeny `configure-pages` zwraca pusty prefiks, więc
-**nie trzeba nic zmieniać w kodzie** — wystarczy dodać domenę w Settings → Pages.
-
-Dodatkowo w konfiguracji siedzi `trailingSlash: true` (Pages serwuje wtedy
-`/sklep/` z `sklep/index.html`), a w `public/` leży `.nojekyll`, bez którego
-Jekyll wyciąłby katalog `_next`. Plik `out/404.html` Pages podstawia
-automatycznie pod nieistniejące adresy.
+ścieżki muszą dostać prefiks — bez tego `/_next/...` zwraca 404 i strona
+ładuje się bez stylów. Dodatkowo w konfiguracji siedzi `trailingSlash: true`
+(Pages serwuje wtedy `/sklep/` z `sklep/index.html`), a w `public/` leży
+`.nojekyll`, bez którego Jekyll wyciąłby katalog `_next`. Plik `out/404.html`
+Pages podstawia automatycznie pod nieistniejące adresy.
 
 ### Lokalny podgląd wersji produkcyjnej
 

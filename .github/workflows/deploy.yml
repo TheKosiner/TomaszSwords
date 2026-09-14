@@ -5,17 +5,18 @@ on:
     branches: [main, master]
   workflow_dispatch:
 
+# Publikujemy przez zwykły push plików na gałąź gh-pages, a nie przez
+# środowisko github-pages — dzięki temu deploy nie zależy od reguł ochrony
+# środowiska ani od trybu "GitHub Actions" w ustawieniach Pages.
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
   group: pages
   cancel-in-progress: false
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -28,28 +29,25 @@ jobs:
       - name: Instalacja zależności
         run: npm ci
 
-      - name: Konfiguracja Pages
-        id: pages
-        uses: actions/configure-pages@v5
-
       - name: Build statyczny
         env:
-          # Publikacja pod https://<user>.github.io/<repo>/ — przy własnej
-          # domenie wyzeruj obie zmienne (NEXT_PUBLIC_BASE_PATH: "").
-          NEXT_PUBLIC_BASE_PATH: ${{ steps.pages.outputs.base_path }}
-          NEXT_PUBLIC_SITE_URL: ${{ steps.pages.outputs.origin }}${{ steps.pages.outputs.base_path }}
+          # Pages serwuje projekt pod /<nazwa-repo>. Po podpięciu własnej
+          # domeny wyzeruj BASE_PATH ("") i wpisz właściwy SITE_URL.
+          NEXT_PUBLIC_BASE_PATH: /TomaszSwords
+          NEXT_PUBLIC_SITE_URL: https://thekosiner.github.io/TomaszSwords
         run: npm run build
 
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: out
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Publikacja katalogu out/ na gałęzi gh-pages
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          test -f out/index.html || { echo "Brak out/index.html — build nic nie wygenerował"; exit 1; }
+          touch out/.nojekyll
+          cd out
+          git init -q -b gh-pages
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Deploy ${GITHUB_SHA::7}"
+          git push -q --force "https://x-access-token:${TOKEN}@github.com/${GITHUB_REPOSITORY}.git" gh-pages
+          echo "Wypchnięto $(find . -name '*.html' | wc -l) stron HTML na gh-pages"
