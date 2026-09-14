@@ -1,0 +1,246 @@
+@import "tailwindcss";
+
+@theme {
+  /* --- Paleta: kuźnia nocą --- */
+  --color-void: #070605;
+  --color-forge-950: #0b0908;
+  --color-forge-900: #100d0b;
+  --color-forge-850: #16120f;
+  --color-forge-800: #1d1815;
+  --color-forge-700: #2a231e;
+  --color-forge-600: #3b322a;
+
+  --color-parchment: #ece3d4;
+  --color-parchment-dim: #b8ab97;
+  --color-ash: #7d7264;
+
+  --color-gold-300: #f0d9a0;
+  --color-gold-400: #e3c178;
+  --color-gold-500: #c8a24a;
+  --color-gold-600: #9a7a31;
+
+  --color-ember-400: #ff9d4d;
+  --color-ember-500: #ff6b1a;
+  --color-ember-600: #d84a08;
+
+  --color-blood-500: #7b2118;
+  --color-blood-600: #5a1610;
+
+  --color-steel-200: #dfe6ec;
+  --color-steel-400: #aab6c0;
+  --color-steel-600: #6f7a84;
+
+  --font-display: var(--font-cinzel), "Trajan Pro", "Times New Roman", serif;
+  --font-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-rune: var(--font-uncial), var(--font-cinzel), serif;
+
+  --ease-blade: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-anvil: cubic-bezier(0.87, 0, 0.13, 1);
+
+  --shadow-forge: 0 0 60px -12px rgba(255, 107, 26, 0.35);
+  --shadow-deep: 0 30px 80px -30px rgba(0, 0, 0, 0.9);
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+    --nav-h: 72px;
+  }
+
+  * {
+    border-color: color-mix(in oklab, var(--color-forge-600) 60%, transparent);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    background-color: var(--color-forge-950);
+    color: var(--color-parchment);
+    font-family: var(--font-body);
+    overflow-x: clip;
+    /* ziarno + poświata paleniska */
+    background-image:
+      radial-gradient(1200px 600px at 50% -10%, rgba(255, 107, 26, 0.09), transparent 70%),
+      radial-gradient(900px 500px at 100% 100%, rgba(200, 162, 74, 0.05), transparent 70%);
+    background-attachment: fixed;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    text-wrap: balance;
+  }
+
+  p { text-wrap: pretty; }
+
+  ::selection {
+    background: var(--color-gold-500);
+    color: var(--color-forge-950);
+  }
+
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: var(--color-forge-900); }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(var(--color-forge-600), var(--color-forge-700));
+    border-radius: 99px;
+    border: 2px solid var(--color-forge-900);
+  }
+  ::-webkit-scrollbar-thumb:hover { background: var(--color-gold-600); }
+}
+
+@layer utilities {
+  .container-forge {
+    width: 100%;
+    max-width: 84rem;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 1024px) {
+    .container-forge { padding-inline: 2.5rem; }
+  }
+
+  .eyebrow {
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    letter-spacing: 0.42em;
+    text-transform: uppercase;
+    color: var(--color-gold-500);
+  }
+
+  /* Tekst „rozżarzony" */
+  .text-forged {
+    background: linear-gradient(
+      180deg,
+      var(--color-parchment) 0%,
+      var(--color-gold-300) 45%,
+      var(--color-gold-600) 78%,
+      #6b4d18 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .text-steel {
+    background: linear-gradient(170deg, #ffffff 0%, var(--color-steel-200) 30%, var(--color-steel-600) 55%, #e9eff4 70%, var(--color-steel-400) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Cienka złota linia */
+  .rule-gold {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--color-gold-600), transparent);
+  }
+
+  .panel {
+    background:
+      linear-gradient(180deg, rgba(28, 23, 19, 0.9), rgba(13, 11, 9, 0.9));
+    border: 1px solid color-mix(in oklab, var(--color-forge-600) 70%, transparent);
+    backdrop-filter: blur(6px);
+  }
+
+  .noise::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.35;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  }
+
+  /* Ostrze przecinające tekst przy hoverze */
+  .sheen {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .sheen::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-120%) skewX(-18deg);
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.14) 45%,
+      rgba(255, 220, 160, 0.35) 50%,
+      transparent
+    );
+    transition: transform 0.85s var(--ease-blade);
+    pointer-events: none;
+  }
+  .sheen:hover::before { transform: translateX(120%) skewX(-18deg); }
+
+  .ember-glow {
+    box-shadow: 0 0 0 1px rgba(200, 162, 74, 0.25), 0 0 40px -10px rgba(255, 107, 26, 0.5);
+  }
+
+  .mask-fade-b {
+    mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
+  }
+
+  .writing-vertical {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+  }
+}
+
+/* --- Klatki kluczowe --- */
+@keyframes emberRise {
+  0%   { transform: translate3d(0, 0, 0) scale(1); opacity: 0; }
+  10%  { opacity: 0.9; }
+  100% { transform: translate3d(var(--drift, 20px), -120vh, 0) scale(0.25); opacity: 0; }
+}
+
+@keyframes flicker {
+  0%, 100% { opacity: 0.85; }
+  45%      { opacity: 1; }
+  55%      { opacity: 0.6; }
+  70%      { opacity: 0.95; }
+}
+
+@keyframes slowSpin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes shimmerLine {
+  0%   { transform: translateY(-100%); opacity: 0; }
+  35%  { opacity: 1; }
+  100% { transform: translateY(400%); opacity: 0; }
+}
+
+.animate-flicker { animation: flicker 4.5s ease-in-out infinite; }
+.animate-slow-spin { animation: slowSpin 40s linear infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* Refleks przesuwający się po wektorowej głowni */
+@keyframes swordGlint {
+  0%, 62% { transform: translateY(-40%); opacity: 0; }
+  68%     { opacity: 0.9; }
+  100%    { transform: translateY(340%); opacity: 0; }
+}
+.sword-glint { animation: swordGlint 5.5s var(--ease-blade) infinite; }
+.group:hover .sword-glint { animation-duration: 1.6s; }
+
+/* Pasek przewijających się haseł */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-100%); }
+}
+.marquee-track { animation: marquee 42s linear infinite; }
+.marquee-track:hover { animation-play-state: paused; }
