@@ -40,7 +40,7 @@ export function SwordStage() {
   }, []);
 
   return (
-    <div className="relative h-[68vh] min-h-[480px] w-full lg:h-[86vh]">
+    <div className="relative mb-10 h-[54vh] min-h-[400px] w-full lg:mb-0 lg:h-[100svh]">
       {/* poświata paleniska za mieczem */}
       <div
         aria-hidden
@@ -72,7 +72,7 @@ export function SwordStage() {
       )}
 
       {/* sterowanie */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 flex flex-col items-center gap-4">
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 flex flex-col items-center gap-4 lg:inset-x-auto lg:bottom-24 lg:right-10 lg:items-end">
         <motion.button
           type="button"
           onClick={() => setExploded((v) => !v)}
@@ -88,7 +88,7 @@ export function SwordStage() {
         </motion.button>
 
         <motion.ul
-          className="hidden flex-wrap items-center justify-center gap-x-5 gap-y-2 px-4 text-[10px] uppercase tracking-[0.28em] text-parchment-dim sm:flex"
+          className="hidden flex-wrap items-center justify-center gap-x-5 gap-y-2 px-4 text-[10px] uppercase tracking-[0.28em] text-parchment-dim sm:flex lg:flex-col lg:flex-nowrap lg:items-end lg:gap-1.5 lg:px-0"
           initial={false}
           animate={{ opacity: exploded ? 1 : 0.45 }}
         >

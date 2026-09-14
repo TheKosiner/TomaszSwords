@@ -14,8 +14,8 @@ export default function HomePage() {
     <>
       <Hero />
       <Marquee />
-      <Featured />
       <Anatomy />
+      <Featured />
       <Categories />
       <SteelTeaser />
       <TimelineTeaser />

@@ -68,7 +68,7 @@ export function Anatomy() {
   const [active, setActive] = useState<Part>(PARTS[2]);
 
   return (
-    <section className="relative py-28 sm:py-36">
+    <section id="anatomia" className="relative scroll-mt-[var(--nav-h)] py-24 sm:py-32">
       <div className="container-forge">
         <Reveal>
           <p className="eyebrow">Anatomia</p>

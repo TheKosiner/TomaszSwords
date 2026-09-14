@@ -14,11 +14,11 @@ const line = {
 export function Hero() {
   const ref = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  const y = useTransform(scrollYProgress, [0, 1], [0, 140]);
+  const y = useTransform(scrollYProgress, [0, 1], [0, 120]);
   const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
 
   return (
-    <section ref={ref} className="relative min-h-[100svh] overflow-hidden pt-[var(--nav-h)]">
+    <section ref={ref} className="relative min-h-[100svh] overflow-hidden pt-[var(--nav-h)] lg:pt-0">
       {/* tło: krata i łuna */}
       <div
         aria-hidden
@@ -27,17 +27,30 @@ export function Hero() {
           backgroundImage:
             "linear-gradient(to right, #c8a24a 1px, transparent 1px), linear-gradient(to bottom, #c8a24a 1px, transparent 1px)",
           backgroundSize: "88px 88px",
-          maskImage: "radial-gradient(ellipse at 50% 35%, black, transparent 72%)",
+          maskImage: "radial-gradient(ellipse at 50% 40%, black, transparent 74%)",
         }}
       />
 
-      <motion.div style={{ y, opacity }} className="container-forge relative grid items-center gap-8 pb-16 pt-10 lg:grid-cols-[1fr_1.05fr] lg:gap-4 lg:pb-24">
-        {/* ---- kolumna tekstowa ---- */}
-        <div className="relative z-20 order-2 text-center lg:order-1 lg:text-left">
+      {/* ---- miecz: na dużych ekranach wypełnia kadr i stoi na środku ---- */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.94 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ delay: 0.2, duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
+        className="lg:absolute lg:inset-0 lg:flex lg:items-center lg:justify-center"
+      >
+        <SwordStage />
+      </motion.div>
+
+      {/* ---- tekst: dół, lewa strona ---- */}
+      <div className="container-forge pointer-events-none relative z-20 pb-14 lg:flex lg:min-h-[100svh] lg:flex-col lg:justify-end lg:pb-24">
+        <motion.div
+          style={{ y, opacity }}
+          className="pointer-events-auto max-w-xl text-center lg:text-left"
+        >
           <motion.p
             initial={{ opacity: 0, x: -16 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.4, duration: 0.8 }}
+            transition={{ delay: 0.5, duration: 0.8 }}
             className="eyebrow"
           >
             Zbrojownia · Anno Domini
@@ -46,8 +59,8 @@ export function Hero() {
           <motion.h1
             initial="hidden"
             animate="show"
-            transition={{ staggerChildren: 0.12, delayChildren: 0.5 }}
-            className="mt-6 font-display text-[clamp(2.6rem,7vw,5.4rem)] font-semibold leading-[0.95] tracking-tight"
+            transition={{ staggerChildren: 0.12, delayChildren: 0.6 }}
+            className="mt-5 font-display text-[clamp(2.4rem,5.6vw,4.6rem)] font-semibold leading-[0.95] tracking-tight"
           >
             {["Stal, która", "pamięta"].map((t) => (
               <span key={t} className="block overflow-hidden">
@@ -74,8 +87,8 @@ export function Hero() {
           <motion.p
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.05, duration: 0.9 }}
-            className="mx-auto mt-7 max-w-md text-[15px] leading-relaxed text-parchment-dim lg:mx-0"
+            transition={{ delay: 1.1, duration: 0.9 }}
+            className="mx-auto mt-6 max-w-md text-[15px] leading-relaxed text-parchment-dim lg:mx-0"
           >
             Miecze średniowieczne dla kolekcjonerów, rekonstruktorów i ludzi,
             którzy chcą trzymać w ręku coś prawdziwego. Pełne specyfikacje,
@@ -85,8 +98,8 @@ export function Hero() {
           <motion.div
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.2, duration: 0.9 }}
-            className="mt-10 flex flex-wrap items-center justify-center gap-4 lg:justify-start"
+            transition={{ delay: 1.25, duration: 0.9 }}
+            className="mt-8 flex flex-wrap items-center justify-center gap-4 lg:justify-start"
           >
             <Magnetic>
               <Link
@@ -102,7 +115,7 @@ export function Hero() {
             <Magnetic strength={0.2}>
               <Link
                 href="/historia"
-                className="inline-flex items-center gap-2 rounded-full border border-forge-600 px-7 py-4 font-display text-[11px] uppercase tracking-[0.3em] text-parchment-dim transition-colors hover:border-gold-600 hover:text-gold-300"
+                className="inline-flex items-center gap-2 rounded-full border border-forge-600 bg-forge-950/40 px-7 py-4 font-display text-[11px] uppercase tracking-[0.3em] text-parchment-dim backdrop-blur-sm transition-colors hover:border-gold-600 hover:text-gold-300"
               >
                 Historia miecza
               </Link>
@@ -113,7 +126,7 @@ export function Hero() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.5, duration: 1 }}
-            className="mt-12 flex justify-center gap-8 border-t border-forge-800 pt-6 lg:justify-start"
+            className="mt-9 flex justify-center gap-8 border-t border-forge-800 pt-5 lg:justify-start"
           >
             {[
               ["14", "typów w ofercie"],
@@ -126,36 +139,8 @@ export function Hero() {
               </div>
             ))}
           </motion.dl>
-        </div>
-
-        {/* ---- scena 3D ---- */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.94 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.25, duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
-          className="relative order-1 lg:order-2"
-        >
-          <SwordStage />
         </motion.div>
-      </motion.div>
-
-      {/* wskazówka scrolla */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 2, duration: 1 }}
-        className="pointer-events-none absolute inset-x-0 bottom-6 z-20 flex flex-col items-center gap-2 lg:left-10 lg:right-auto lg:items-start"
-      >
-        <span className="font-display text-[9px] uppercase tracking-[0.42em] text-ash">
-          Przewiń
-        </span>
-        <span className="relative block h-12 w-px overflow-hidden bg-forge-700">
-          <span
-            className="absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-gold-400 to-transparent"
-            style={{ animation: "shimmerLine 2.4s ease-in-out infinite" }}
-          />
-        </span>
-      </motion.div>
+      </div>
     </section>
   );
 }

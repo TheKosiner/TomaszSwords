@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Crest } from "./Crest";
+import { Monogram } from "./Monogram";
 
 const COLUMNS = [
   {
@@ -15,6 +15,7 @@ const COLUMNS = [
   {
     title: "Wiedza",
     links: [
+      { href: "/#anatomia", label: "Anatomia miecza" },
       { href: "/historia", label: "Historia miecza" },
       { href: "/stal", label: "Stale i hartowanie" },
       { href: "/rzemioslo", label: "Jak powstaje miecz" },
@@ -39,7 +40,7 @@ export function Footer() {
         <div className="grid gap-12 lg:grid-cols-[1.4fr_repeat(3,1fr)]">
           <div>
             <div className="flex items-center gap-3">
-              <Crest className="h-9 w-9 text-gold-500" />
+              <Monogram uid="ft" className="h-11 w-auto" />
               <span>
                 <span className="block font-display text-base uppercase tracking-[0.34em] text-parchment">
                   Tomasz

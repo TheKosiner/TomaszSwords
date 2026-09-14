@@ -241,7 +241,7 @@ export function SwordModel({
   const wraps = useMemo(() => Array.from({ length: 13 }, (_, i) => i), []);
 
   return (
-    <group ref={root} rotation={[0, 0.3, 0]} position={[-1.05, 2.66, 0]}>
+    <group ref={root} rotation={[0, 0.3, 0]} position={[0, 2.66, 0]}>
       {/* ---------------------------------------------------- głownia */}
       <group ref={blade} position={[0, 0.5, 0]}>
         <mesh geometry={bladeGeo} castShadow>
@@ -260,10 +260,11 @@ export function SwordModel({
           <meshStandardMaterial {...darkSteelProps} transparent opacity={0.25} />
         </mesh>
         <PartLabel
-          position={[-0.55, -BLADE_LEN * 0.45, 0]}
+          position={[0.55, -BLADE_LEN * 0.5, 0]}
           title="Głownia"
           desc="Hartowana stal sprężynowa. Zbrocze odbiera masę ze środka, zostawiając sztywność przy krawędziach."
           visible={exploded}
+          align="right"
         />
         <PartLabel
           position={[0.5, 1.15, 0]}

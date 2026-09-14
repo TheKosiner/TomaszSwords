@@ -5,10 +5,11 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useScroll, useMotionValueEvent } from "motion/react";
 import { useCart } from "@/lib/cart";
-import { Crest } from "./Crest";
+import { Monogram } from "./Monogram";
 
 const NAV = [
   { href: "/sklep", label: "Zbrojownia" },
+  { href: "/#anatomia", label: "Anatomia" },
   { href: "/historia", label: "Historia" },
   { href: "/stal", label: "Stal" },
   { href: "/rzemioslo", label: "Rzemiosło" },
@@ -48,7 +49,7 @@ export function Header() {
       >
         <div className="container-forge flex h-[var(--nav-h)] items-center justify-between gap-6">
           <Link href="/" className="group flex items-center gap-3" aria-label="Tomasz Swords — strona główna">
-            <Crest className="h-8 w-8 text-gold-500 transition-transform duration-700 group-hover:rotate-[20deg]" />
+            <Monogram uid="hd" className="h-14 w-auto shrink-0 transition-transform duration-700 group-hover:scale-110" />
             <span className="leading-none">
               <span className="block font-display text-[15px] uppercase tracking-[0.34em] text-parchment">
                 Tomasz
@@ -61,7 +62,9 @@ export function Header() {
 
           <nav className="hidden items-center gap-1 lg:flex">
             {NAV.map((item) => {
-              const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
+              const active = item.href.includes("#")
+                ? false
+                : pathname === item.href || pathname.startsWith(`${item.href}/`);
               return (
                 <Link
                   key={item.href}
