@@ -522,7 +522,7 @@ export const PRODUCTS: Product[] = [
     art: { blade: "taper", guard: "straight", pommel: "brazil", grip: "#4d3a2c", fitting: "silver", ratio: 1.15 },
   },
   {
-    slug: "miecz-saksonski-witeź",
+    slug: "miecz-saksonski-witez",
     name: "Miecz saksoński „Witeź”",
     subtitle: "Wczesnośredniowieczny miecz z mosiężnym jelcem",
     category: "wczesnosredniowieczne",
