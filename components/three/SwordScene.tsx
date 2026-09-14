@@ -19,7 +19,7 @@ export function SwordScene({
 
   return (
     <Canvas
-      className="!absolute inset-0"
+      className="!absolute inset-x-0 top-0 bottom-28"
       dpr={[1, 2]}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       camera={{ position: [0, 0, 27], fov: 32 }}

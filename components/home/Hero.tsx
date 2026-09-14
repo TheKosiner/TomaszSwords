@@ -144,7 +144,7 @@ export function Hero() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 2, duration: 1 }}
-        className="pointer-events-none absolute inset-x-0 bottom-6 z-20 flex flex-col items-center gap-2"
+        className="pointer-events-none absolute inset-x-0 bottom-6 z-20 flex flex-col items-center gap-2 lg:left-10 lg:right-auto lg:items-start"
       >
         <span className="font-display text-[9px] uppercase tracking-[0.42em] text-ash">
           Przewiń

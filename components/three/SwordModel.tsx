@@ -232,7 +232,7 @@ export function SwordModel({
       const targetX = -p.y * 0.2;
       root.current.rotation.y += (targetY - root.current.rotation.y) * Math.min(delta * 2.2, 1);
       root.current.rotation.x += (targetX - root.current.rotation.x) * Math.min(delta * 2.2, 1);
-      root.current.position.y = 2.45 + Math.sin(state.clock.elapsedTime * 0.7) * 0.06;
+      root.current.position.y = 2.66 + Math.sin(state.clock.elapsedTime * 0.7) * 0.06;
       const s = 1.12 - ease * 0.26;
       root.current.scale.setScalar(s);
     }
@@ -241,7 +241,7 @@ export function SwordModel({
   const wraps = useMemo(() => Array.from({ length: 13 }, (_, i) => i), []);
 
   return (
-    <group ref={root} rotation={[0, 0.3, 0]} position={[-1.05, 2.45, 0]}>
+    <group ref={root} rotation={[0, 0.3, 0]} position={[-1.05, 2.66, 0]}>
       {/* ---------------------------------------------------- głownia */}
       <group ref={blade} position={[0, 0.5, 0]}>
         <mesh geometry={bladeGeo} castShadow>
