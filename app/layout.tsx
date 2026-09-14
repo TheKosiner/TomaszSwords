@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { SITE_URL } from "@/lib/site";
 import { Cinzel, Inter } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/lib/cart";
@@ -22,7 +23,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://tomaszswords.pl"),
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "Tomasz Swords — miecze średniowieczne, repliki i akcesoria",
     template: "%s · Tomasz Swords",

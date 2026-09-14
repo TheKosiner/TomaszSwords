@@ -1,7 +1,8 @@
+export const dynamic = "force-static";
+
 import type { MetadataRoute } from "next";
 import { PRODUCTS } from "@/lib/products";
-
-const BASE = "https://tomaszswords.pl";
+import { SITE_URL as BASE } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const pages = ["", "/sklep", "/historia", "/stal", "/rzemioslo", "/o-nas", "/kontakt"];

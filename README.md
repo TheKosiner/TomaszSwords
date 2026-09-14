@@ -15,16 +15,55 @@ z modelem 3D miecza rozkładanym na części, rozbudowaną sekcją wiedzy
 | 3D | `three` + `@react-three/fiber` + `@react-three/drei` |
 | Fonty | Cinzel (nagłówki) + Inter (tekst), przez `next/font` |
 
-Cała zawartość jest statyczna — `next build` generuje 27 prerenderowanych
-stron, więc projekt hostuje się na dowolnym CDN-ie.
+Cała zawartość jest statyczna — `next build` robi pełny eksport
+(`output: "export"`) do katalogu `out/`, więc projekt hostuje się na
+GitHub Pages albo dowolnym innym serwerze plików. Zero backendu.
 
 ## Uruchomienie
 
 ```bash
 npm install
 npm run dev     # http://localhost:3000
-npm run build   # produkcja
-npm run start   # serwer produkcyjny
+npm run build   # eksport statyczny do out/
+```
+
+## Deploy na GitHub Pages
+
+W repo jest gotowy workflow `.github/workflows/deploy.yml`. Jednorazowa
+konfiguracja:
+
+1. **Settings → Pages → Build and deployment → Source: `GitHub Actions`**
+   (nie „Deploy from a branch”).
+2. Zmerguj tę gałąź do `main` — workflow odpala się na push do `main`
+   lub `master`, można go też uruchomić ręcznie (`Actions → Run workflow`).
+3. Po przejściu builda strona stoi pod
+   `https://thekosiner.github.io/TomaszSwords/`.
+
+### Dlaczego `basePath`
+
+GitHub Pages serwuje projekt w podkatalogu `/<nazwa-repo>`, więc wszystkie
+ścieżki muszą dostać prefiks. Workflow bierze go automatycznie z akcji
+`actions/configure-pages` i podaje jako `NEXT_PUBLIC_BASE_PATH`:
+
+```
+NEXT_PUBLIC_BASE_PATH=/TomaszSwords npm run build
+```
+
+Po podpięciu własnej domeny `configure-pages` zwraca pusty prefiks, więc
+**nie trzeba nic zmieniać w kodzie** — wystarczy dodać domenę w Settings → Pages.
+
+Dodatkowo w konfiguracji siedzi `trailingSlash: true` (Pages serwuje wtedy
+`/sklep/` z `sklep/index.html`), a w `public/` leży `.nojekyll`, bez którego
+Jekyll wyciąłby katalog `_next`. Plik `out/404.html` Pages podstawia
+automatycznie pod nieistniejące adresy.
+
+### Lokalny podgląd wersji produkcyjnej
+
+```bash
+NEXT_PUBLIC_BASE_PATH=/TomaszSwords npm run build
+mkdir -p .preview/TomaszSwords && cp -r out/. .preview/TomaszSwords/
+cd .preview && python3 -m http.server 3000
+# http://localhost:3000/TomaszSwords/
 ```
 
 ## Struktura
