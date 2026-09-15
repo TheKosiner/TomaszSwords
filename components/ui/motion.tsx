@@ -29,7 +29,7 @@ export function Reveal({
   y = 28,
   className,
   once = true,
-  blur = true,
+  blur = false,
 }: RevealProps) {
   const reduce = useReducedMotion();
   return (

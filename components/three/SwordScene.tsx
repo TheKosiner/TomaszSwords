@@ -1,8 +1,8 @@
 "use client";
 
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Environment, Lightformer, Sparkles, AdaptiveDpr } from "@react-three/drei";
-import { Suspense, useRef, useState } from "react";
+import { Environment, Lightformer, Sparkles, PerformanceMonitor } from "@react-three/drei";
+import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import SwordModel from "./SwordModel";
 
 const BASE_DISTANCE = 27;
@@ -20,23 +20,40 @@ function CameraRig({ zoom }: { zoom: number }) {
 export function SwordScene({
   exploded,
   zoom = 1,
+  active = true,
   onPointerMoveNormalized,
 }: {
   exploded: boolean;
   zoom?: number;
+  /** false = scena poza ekranem lub karta w tle; pętla renderowania stoi */
+  active?: boolean;
   onPointerMoveNormalized?: (x: number, y: number) => void;
 }) {
   const pointer = useRef({ x: 0, y: 0 });
   const [failed, setFailed] = useState(false);
+  /* Rozdzielczość renderowania.
+     Sufit to 1 CSS piksel: na ekranie retina scena liczyłaby inaczej czterokrotnie
+     więcej pikseli, czego gołym okiem na ciemnym metalu i tak nie widać.
+     Poniżej sufitu schodzimy tylko wtedy, gdy pomiar płynności tego wymaga. */
+  const [dpr, setDpr] = useState(1);
+  useEffect(() => {
+    setDpr(Math.min(window.devicePixelRatio || 1, 1));
+  }, []);
+  const onPerf = useCallback(
+    ({ factor }: { factor: number }) =>
+      setDpr(Math.round((0.6 + factor * 0.4) * 20) / 20),
+    [],
+  );
 
   if (failed) return null;
 
   return (
     <Canvas
       className="!absolute inset-x-0 top-0 bottom-16 lg:bottom-28"
-      dpr={[1, 2]}
+      dpr={dpr}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       camera={{ position: [0, 0, BASE_DISTANCE], fov: 32 }}
+      frameloop={active ? "always" : "never"}
       onCreated={({ gl }) => {
         gl.toneMappingExposure = 1.05;
       }}
@@ -52,6 +69,16 @@ export function SwordScene({
         pointer.current = { x: 0, y: 0 };
       }}
     >
+      <PerformanceMonitor
+        /* Progi podane wprost, bez zgadywania z odświeżania ekranu:
+           poniżej 24 kl./s schodzimy z rozdzielczości, powyżej 50 wracamy. */
+        bounds={() => [24, 50]}
+        ms={250}
+        iterations={10}
+        /* duży krok = zwykle jedna zmiana rozmiaru bufora zamiast kilku */
+        step={0.4}
+        onChange={onPerf}
+      />
       <Suspense fallback={null}>
         <ambientLight intensity={0.55} />
         <directionalLight position={[6, 9, 8]} intensity={2.6} color="#fff2df" />
@@ -72,7 +99,7 @@ export function SwordScene({
         </Environment>
 
         <Sparkles
-          count={45}
+          count={12}
           scale={[7, 13, 5]}
           size={2.6}
           speed={0.32}
@@ -82,7 +109,6 @@ export function SwordScene({
 
         <CameraRig zoom={zoom} />
         <SwordModel exploded={exploded} pointer={pointer} />
-        <AdaptiveDpr pixelated />
       </Suspense>
     </Canvas>
   );

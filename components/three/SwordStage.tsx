@@ -31,14 +31,37 @@ export function SwordStage() {
   const [supported, setSupported] = useState(true);
   const [exploded, setExploded] = useState(false);
   const [zoom, setZoom] = useState(1);
+  /** scena liczy klatki tylko gdy jest na ekranie i karta jest na wierzchu */
+  const [onScreen, setOnScreen] = useState(true);
+  const [tabVisible, setTabVisible] = useState(true);
 
+  const stageRef = useRef<HTMLDivElement>(null);
   /** rozstaw palców z poprzedniej klatki gestu szczypania */
   const pinchStart = useRef<number | null>(null);
 
   useEffect(() => {
-    setSupported(hasWebGL());
+    // przy włączonym ograniczeniu animacji w systemie w ogóle nie uruchamiamy sceny
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    setSupported(!reduce && hasWebGL());
     const id = window.setTimeout(() => setReady(true), 120);
     return () => window.clearTimeout(id);
+  }, []);
+
+  useEffect(() => {
+    const el = stageRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => setOnScreen(entry.isIntersecting),
+      { rootMargin: "120px" },
+    );
+    io.observe(el);
+
+    const onVis = () => setTabVisible(!document.hidden);
+    document.addEventListener("visibilitychange", onVis);
+    return () => {
+      io.disconnect();
+      document.removeEventListener("visibilitychange", onVis);
+    };
   }, []);
 
   const touchSpread = (touches: React.TouchList) => {
@@ -49,6 +72,7 @@ export function SwordStage() {
   return (
     <>
       <div
+        ref={stageRef}
         className="relative mb-6 h-[54vh] min-h-[400px] w-full touch-pan-y lg:mb-0 lg:h-[100svh]"
         onTouchStart={(e) => {
           if (e.touches.length === 2) pinchStart.current = touchSpread(e.touches);
@@ -71,7 +95,9 @@ export function SwordStage() {
 
         {supported ? (
           <>
-            {ready && <SwordScene exploded={exploded} zoom={zoom} />}
+            {ready && (
+              <SwordScene exploded={exploded} zoom={zoom} active={onScreen && tabVisible} />
+            )}
             <AnimatePresence>
               {!ready && (
                 <motion.div exit={{ opacity: 0 }} className="absolute inset-0 grid place-items-center">

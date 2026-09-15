@@ -191,13 +191,12 @@ export function SwordArt({
         {/* refleks przesuwający się po ostrzu */}
         <g clipPath={`url(#${uid}-clip)`}>
           <rect
-            className={animated ? "sword-glint" : undefined}
+            className={animated ? "sword-glint sword-glint-idle" : "sword-glint"}
             x="60"
             y={bladeY0}
             width="80"
             height={bladeLen * 0.3}
             fill={`url(#${uid}-glint)`}
-            opacity={animated ? 1 : 0}
           />
         </g>
       </g>

@@ -6,7 +6,7 @@ type Spark = { left: number; delay: number; duration: number; size: number; drif
 
 /** Delikatne iskry unoszące się znad paleniska. Generowane po stronie klienta,
  *  żeby nie powodować rozjazdu przy hydracji. */
-export function Embers({ count = 22 }: { count?: number }) {
+export function Embers({ count = 12 }: { count?: number }) {
   const [sparks, setSparks] = useState<Spark[]>([]);
 
   useEffect(() => {
@@ -35,7 +35,7 @@ export function Embers({ count = 22 }: { count?: number }) {
             width: s.size,
             height: s.size,
             background: s.hue,
-            boxShadow: `0 0 ${s.size * 4}px ${s.size}px ${s.hue}55`,
+            boxShadow: `0 0 ${s.size * 3}px ${s.hue}44`,
             animation: `emberRise ${s.duration}s linear ${s.delay}s infinite`,
             ["--drift" as string]: `${s.drift}px`,
           }}

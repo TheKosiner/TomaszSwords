@@ -50,6 +50,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
               <SwordArt
                 id={product.slug}
                 art={product.art}
+                animated={false}
                 className="h-full w-auto drop-shadow-[0_10px_30px_rgba(0,0,0,0.6)]"
               />
             </motion.div>

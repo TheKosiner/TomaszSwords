@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 import { Html } from "@react-three/drei";
@@ -208,6 +208,18 @@ export function SwordModel({
 
   const t = useRef(0);
 
+  /* Każda etykieta to węzeł DOM przeliczany w każdej klatce, więc trzymamy je
+     w drzewie tylko przy rozłożonym mieczu (z opóźnieniem na animację zwijania). */
+  const [labelsMounted, setLabelsMounted] = useState(false);
+  useEffect(() => {
+    if (exploded) {
+      setLabelsMounted(true);
+      return;
+    }
+    const id = window.setTimeout(() => setLabelsMounted(false), 600);
+    return () => window.clearTimeout(id);
+  }, [exploded]);
+
   useFrame((state, delta) => {
     const target = exploded ? 1 : 0;
     t.current += (target - t.current) * Math.min(delta * 3.2, 1);
@@ -241,7 +253,7 @@ export function SwordModel({
     }
   });
 
-  const wraps = useMemo(() => Array.from({ length: 13 }, (_, i) => i), []);
+  const wraps = useMemo(() => Array.from({ length: 9 }, (_, i) => i), []);
 
   return (
     <group ref={root} rotation={[0, 0.3, 0]} position={[0, 2.66, 0]}>
@@ -262,20 +274,20 @@ export function SwordModel({
           <boxGeometry args={[0.1, 2.3, 0.08]} />
           <meshStandardMaterial {...darkSteelProps} transparent opacity={0.25} />
         </mesh>
-        <PartLabel
+        {labelsMounted && <PartLabel
           position={[0.55, -BLADE_LEN * 0.66, 0]}
           title="Głownia"
           desc={PART.glownia.desc}
           visible={exploded}
           align="right"
-        />
-        <PartLabel
+        />}
+        {labelsMounted && <PartLabel
           position={[0.5, 0.35, 0]}
           title="Trzpień"
           desc={PART.trzpien.desc}
           visible={exploded}
           align="right"
-        />
+        />}
       </group>
 
       {/* ------------------------------------------------------- jelec */}
@@ -283,12 +295,12 @@ export function SwordModel({
         <mesh geometry={guardGeo} castShadow>
           <meshStandardMaterial {...steelProps} roughness={0.24} />
         </mesh>
-        <PartLabel
+        {labelsMounted && <PartLabel
           position={[-1.25, 0, 0]}
           title="Jelec"
           desc={PART.jelec.desc}
           visible={exploded}
-        />
+        />}
       </group>
 
       {/* --------------------------------------------------- rękojeść */}
@@ -298,18 +310,18 @@ export function SwordModel({
           <meshStandardMaterial {...leatherProps} />
         </mesh>
         {wraps.map((i) => (
-          <mesh key={i} position={[0, -0.56 + i * 0.094, 0]} rotation={[Math.PI / 2, 0, 0.16]}>
-            <torusGeometry args={[0.121, 0.012, 6, 22]} />
+          <mesh key={i} position={[0, -0.54 + i * 0.135, 0]} rotation={[Math.PI / 2, 0, 0.16]}>
+            <torusGeometry args={[0.121, 0.014, 5, 16]} />
             <meshStandardMaterial color="#2c120e" roughness={0.9} metalness={0.02} />
           </mesh>
         ))}
-        <PartLabel
+        {labelsMounted && <PartLabel
           position={[0.45, 0, 0]}
           title="Rękojeść"
           desc={PART.rekojesc.desc}
           visible={exploded}
           align="right"
-        />
+        />}
       </group>
 
       {/* ---------------------------------------------------- głowica */}
@@ -328,12 +340,12 @@ export function SwordModel({
             <meshStandardMaterial {...darkSteelProps} color="#5a636b" />
           </mesh>
         ))}
-        <PartLabel
+        {labelsMounted && <PartLabel
           position={[-0.5, -0.3, 0]}
           title="Głowica"
           desc={PART.glowica.desc}
           visible={exploded}
-        />
+        />}
       </group>
 
       {/* ----------------------------------------------------- pochwa */}
@@ -368,13 +380,13 @@ export function SwordModel({
             </mesh>
           </group>
         ))}
-        <PartLabel
+        {labelsMounted && <PartLabel
           position={[0.7, 4.2, 0]}
           title="Pochwa"
           desc={PART.pochwa.desc}
           visible={exploded}
           align="right"
-        />
+        />}
       </group>
     </group>
   );
