@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Monogram } from "./Monogram";
+import { Logo } from "./Logo";
 
 const COLUMNS = [
   {
@@ -40,7 +40,7 @@ export function Footer() {
         <div className="grid gap-12 lg:grid-cols-[1.4fr_repeat(3,1fr)]">
           <div>
             <div className="flex items-center gap-3">
-              <Monogram uid="ft" className="h-11 w-auto" />
+              <Logo className="h-14 w-auto" />
               <span>
                 <span className="block font-display text-base uppercase tracking-[0.34em] text-parchment">
                   Tomasz

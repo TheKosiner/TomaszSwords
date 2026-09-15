@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useScroll, useMotionValueEvent } from "motion/react";
 import { useCart } from "@/lib/cart";
-import { Monogram } from "./Monogram";
+import { Logo } from "./Logo";
 
 const NAV = [
   { href: "/sklep", label: "Zbrojownia" },
@@ -49,7 +49,7 @@ export function Header() {
       >
         <div className="container-forge flex h-[var(--nav-h)] items-center justify-between gap-6">
           <Link href="/" className="group flex items-center gap-3" aria-label="Tomasz Swords — strona główna">
-            <Monogram uid="hd" className="h-14 w-auto shrink-0 transition-transform duration-700 group-hover:scale-110" />
+            <Logo priority className="h-14 w-auto shrink-0 transition-transform duration-700 group-hover:scale-105" />
             <span className="leading-none">
               <span className="block font-display text-[15px] uppercase tracking-[0.34em] text-parchment">
                 Tomasz

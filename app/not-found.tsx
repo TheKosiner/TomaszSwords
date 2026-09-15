@@ -1,10 +1,10 @@
 import Link from "next/link";
-import Monogram from "@/components/site/Monogram";
+import Logo from "@/components/site/Logo";
 
 export default function NotFound() {
   return (
     <section className="container-forge flex min-h-[70vh] flex-col items-center justify-center gap-7 pt-[var(--nav-h)] text-center">
-      <Monogram uid="nf" className="h-28 w-auto opacity-70" />
+      <Logo className="h-32 w-auto opacity-80" />
       <p className="eyebrow">Błąd 404</p>
       <h1 className="max-w-xl font-display text-[clamp(2rem,5vw,3.4rem)] leading-[1.05]">
         Ta głownia <span className="text-forged">nie istnieje</span>

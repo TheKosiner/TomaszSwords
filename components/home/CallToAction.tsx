@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Reveal } from "@/components/ui/motion";
-import Monogram from "@/components/site/Monogram";
+import Logo from "@/components/site/Logo";
 
 export function CallToAction() {
   const [email, setEmail] = useState("");
@@ -14,7 +14,7 @@ export function CallToAction() {
       <div className="container-forge">
         <Reveal>
           <div className="panel noise relative overflow-hidden rounded-3xl px-6 py-16 text-center sm:px-16">
-            <Monogram uid="cta" className="pointer-events-none absolute left-1/2 top-1/2 h-[460px] w-auto -translate-x-1/2 -translate-y-1/2 opacity-[0.06]" />
+            <Logo className="pointer-events-none absolute left-1/2 top-1/2 h-[460px] w-auto -translate-x-1/2 -translate-y-1/2 opacity-[0.07]" />
             <div
               aria-hidden
               className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-[radial-gradient(ellipse_at_bottom,rgba(255,107,26,0.2),transparent_70%)]"
