@@ -52,7 +52,7 @@ export function SwordScene({
 
   return (
     <Canvas
-      className="!absolute inset-x-0 top-0 bottom-16 lg:bottom-28"
+      className={`!absolute inset-x-0 top-0 lg:bottom-28 ${compact ? "bottom-0" : "bottom-16"}`}
       dpr={dpr}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       camera={{ position: [0, 0, BASE_DISTANCE], fov: 32 }}

@@ -19,18 +19,6 @@ export function Hero() {
 
   return (
     <section ref={ref} className="relative min-h-[100svh] overflow-hidden pt-[var(--nav-h)] lg:pt-0">
-      {/* tło: krata i łuna */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 opacity-[0.06]"
-        style={{
-          backgroundImage:
-            "linear-gradient(to right, #c8a24a 1px, transparent 1px), linear-gradient(to bottom, #c8a24a 1px, transparent 1px)",
-          backgroundSize: "88px 88px",
-          maskImage: "radial-gradient(ellipse at 50% 40%, black, transparent 74%)",
-        }}
-      />
-
       {/* ---- miecz: na dużych ekranach wypełnia kadr i stoi na środku ---- */}
       <motion.div
         initial={{ opacity: 0, scale: 0.94 }}

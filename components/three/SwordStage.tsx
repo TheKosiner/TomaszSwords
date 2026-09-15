@@ -62,7 +62,14 @@ export function SwordStage() {
     document.addEventListener("visibilitychange", onVis);
 
     const mq = window.matchMedia("(max-width: 1023px)");
-    const onMq = () => setCompact(mq.matches);
+    const onMq = () => {
+      setCompact(mq.matches);
+      // na wąskim ekranie pokazujemy sam miecz — bez rozkładania i bez zoomu
+      if (mq.matches) {
+        setExploded(false);
+        setZoom(1);
+      }
+    };
     onMq();
     mq.addEventListener("change", onMq);
 
@@ -83,14 +90,16 @@ export function SwordStage() {
       <div
         ref={stageRef}
         className={[
-          "relative mb-6 w-full touch-pan-y transition-[height] duration-500 lg:mb-0 lg:h-[100svh]",
-          exploded ? "h-[82vh] min-h-[560px]" : "h-[54vh] min-h-[400px]",
+          "relative mb-6 w-full transition-[height] duration-500 lg:mb-0 lg:h-[100svh]",
+          compact ? "h-[54vh] min-h-[400px]" : exploded ? "h-[82vh] min-h-[560px]" : "h-[54vh] min-h-[400px]",
+          // gest szczypania przechwytujemy tylko tam, gdzie zoom w ogóle działa
+          compact ? "" : "touch-pan-y",
         ].join(" ")}
         onTouchStart={(e) => {
-          if (e.touches.length === 2) pinchStart.current = touchSpread(e.touches);
+          if (!compact && e.touches.length === 2) pinchStart.current = touchSpread(e.touches);
         }}
         onTouchMove={(e) => {
-          if (e.touches.length !== 2 || pinchStart.current === null) return;
+          if (compact || e.touches.length !== 2 || pinchStart.current === null) return;
           const now = touchSpread(e.touches);
           setZoom((z) => clampZoom(z * (now / pinchStart.current!)));
           pinchStart.current = now;
@@ -134,7 +143,8 @@ export function SwordStage() {
         )}
 
         {/* --------------------------------------------------- sterowanie */}
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 flex flex-col items-center gap-3 lg:inset-x-auto lg:bottom-24 lg:right-10 lg:items-end">
+        {!compact && (
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 flex flex-col items-center gap-3 lg:inset-x-auto lg:bottom-24 lg:right-10 lg:items-end">
           <div className="pointer-events-auto flex items-center gap-2">
             <motion.button
               type="button"
@@ -198,8 +208,9 @@ export function SwordStage() {
                 <span className="normal-case tracking-normal text-ash">· {p.note}</span>
               </motion.li>
             ))}
-          </motion.ul>
-        </div>
+            </motion.ul>
+          </div>
+        )}
 
         {!supported && (
           <p className="absolute bottom-20 left-1/2 w-full max-w-xs -translate-x-1/2 text-center text-[11px] text-ash">
