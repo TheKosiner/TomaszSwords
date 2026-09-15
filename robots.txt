@@ -1,0 +1,5 @@
+User-Agent: *
+Allow: /
+Disallow: /TomaszSwords/koszyk
+
+Sitemap: https://thekosiner.github.io/TomaszSwords/sitemap.xml
