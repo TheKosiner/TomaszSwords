@@ -21,10 +21,13 @@ export function SwordScene({
   exploded,
   zoom = 1,
   active = true,
+  compact = false,
   onPointerMoveNormalized,
 }: {
   exploded: boolean;
   zoom?: number;
+  /** wąski ekran — etykiety w wersji kompaktowej */
+  compact?: boolean;
   /** false = scena poza ekranem lub karta w tle; pętla renderowania stoi */
   active?: boolean;
   onPointerMoveNormalized?: (x: number, y: number) => void;
@@ -108,7 +111,7 @@ export function SwordScene({
         />
 
         <CameraRig zoom={zoom} />
-        <SwordModel exploded={exploded} pointer={pointer} />
+        <SwordModel exploded={exploded} compact={compact} pointer={pointer} />
       </Suspense>
     </Canvas>
   );

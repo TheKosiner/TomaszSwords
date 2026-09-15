@@ -34,6 +34,8 @@ export function SwordStage() {
   /** scena liczy klatki tylko gdy jest na ekranie i karta jest na wierzchu */
   const [onScreen, setOnScreen] = useState(true);
   const [tabVisible, setTabVisible] = useState(true);
+  /** poniżej 1024 px etykiety jadą w wersji kompaktowej, a scena dostaje więcej wysokości */
+  const [compact, setCompact] = useState(false);
 
   const stageRef = useRef<HTMLDivElement>(null);
   /** rozstaw palców z poprzedniej klatki gestu szczypania */
@@ -58,9 +60,16 @@ export function SwordStage() {
 
     const onVis = () => setTabVisible(!document.hidden);
     document.addEventListener("visibilitychange", onVis);
+
+    const mq = window.matchMedia("(max-width: 1023px)");
+    const onMq = () => setCompact(mq.matches);
+    onMq();
+    mq.addEventListener("change", onMq);
+
     return () => {
       io.disconnect();
       document.removeEventListener("visibilitychange", onVis);
+      mq.removeEventListener("change", onMq);
     };
   }, []);
 
@@ -73,7 +82,10 @@ export function SwordStage() {
     <>
       <div
         ref={stageRef}
-        className="relative mb-6 h-[54vh] min-h-[400px] w-full touch-pan-y lg:mb-0 lg:h-[100svh]"
+        className={[
+          "relative mb-6 w-full touch-pan-y transition-[height] duration-500 lg:mb-0 lg:h-[100svh]",
+          exploded ? "h-[82vh] min-h-[560px]" : "h-[54vh] min-h-[400px]",
+        ].join(" ")}
         onTouchStart={(e) => {
           if (e.touches.length === 2) pinchStart.current = touchSpread(e.touches);
         }}
@@ -96,7 +108,12 @@ export function SwordStage() {
         {supported ? (
           <>
             {ready && (
-              <SwordScene exploded={exploded} zoom={zoom} active={onScreen && tabVisible} />
+              <SwordScene
+                exploded={exploded}
+                zoom={zoom}
+                compact={compact}
+                active={onScreen && tabVisible}
+              />
             )}
             <AnimatePresence>
               {!ready && (
@@ -191,42 +208,6 @@ export function SwordStage() {
         )}
       </div>
 
-      {/* ------- opisy części pod sceną: tam, gdzie etykiety się nie mieszczą ------- */}
-      <div className="lg:hidden">
-        <AnimatePresence initial={false}>
-          {exploded && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-              className="overflow-hidden"
-            >
-              <div className="container-forge pb-6 pt-2">
-                <p className="eyebrow mb-4">Z czego składa się miecz</p>
-                <ul className="grid gap-3 sm:grid-cols-2">
-                  {SWORD_PARTS.map((p, i) => (
-                    <motion.li
-                      key={p.id}
-                      initial={{ opacity: 0, y: 14 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: i * 0.06, duration: 0.45 }}
-                      className="panel rounded-2xl p-4"
-                    >
-                      <p className="font-display text-[12px] uppercase tracking-[0.26em] text-gold-300">
-                        {p.title}
-                      </p>
-                      <p className="mt-2 text-[13px] leading-relaxed text-parchment-dim">
-                        {p.desc}
-                      </p>
-                    </motion.li>
-                  ))}
-                </ul>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
     </>
   );
 }

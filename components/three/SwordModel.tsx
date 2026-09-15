@@ -145,14 +145,21 @@ function PartLabel({
   title,
   desc,
   visible,
+  compact,
   align = "left",
+  compactAlign,
 }: {
   position: [number, number, number];
   title: string;
   desc: string;
   visible: boolean;
+  /** wąski ekran — mniejsza ramka i drobniejszy tekst, żeby zmieścić się przy mieczu */
+  compact: boolean;
   align?: "left" | "right";
+  /** strona na wąskim ekranie, gdy ma być inna niż na dużym */
+  compactAlign?: "left" | "right";
 }) {
+  const side = compact ? (compactAlign ?? align) : align;
   return (
     <Html
       position={position}
@@ -163,22 +170,46 @@ function PartLabel({
     >
       <div
         className={[
-          "hidden w-56 transition-all duration-500 lg:block",
-          align === "left" ? "text-left -translate-x-28" : "text-right translate-x-28",
+          "transition-all duration-500",
+          compact ? "w-28" : "w-56",
+          side === "left"
+            ? compact
+              ? "-translate-x-[2.6rem] text-left"
+              : "-translate-x-28 text-left"
+            : compact
+              ? "translate-x-[2.6rem] text-right"
+              : "translate-x-28 text-right",
           visible ? "opacity-100 blur-0" : "opacity-0 blur-sm",
         ].join(" ")}
       >
         <div
           className={[
             "h-px w-full bg-gradient-to-r",
-            align === "left" ? "from-transparent to-gold-500" : "from-gold-500 to-transparent",
+            side === "left" ? "from-transparent to-gold-500" : "from-gold-500 to-transparent",
           ].join(" ")}
         />
-        <div className="mt-2 rounded-xl border border-gold-600/35 bg-forge-950/90 px-4 py-2.5 shadow-[0_10px_40px_-8px_rgba(0,0,0,0.9)] backdrop-blur-md">
-          <p className="font-display text-[14px] uppercase leading-none tracking-[0.24em] text-gold-300">
+        <div
+          className={[
+            "rounded-xl border border-gold-600/35 bg-forge-950/90 shadow-[0_10px_40px_-8px_rgba(0,0,0,0.9)] backdrop-blur-md",
+            compact ? "mt-1.5 px-2.5 py-2" : "mt-2 px-4 py-2.5",
+          ].join(" ")}
+        >
+          <p
+            className={[
+              "font-display uppercase leading-none text-gold-300",
+              compact ? "text-[10px] tracking-[0.16em]" : "text-[14px] tracking-[0.24em]",
+            ].join(" ")}
+          >
             {title}
           </p>
-          <p className="mt-2 text-[12.5px] leading-snug text-parchment">{desc}</p>
+          <p
+            className={[
+              "text-parchment",
+              compact ? "mt-1.5 text-[10px] leading-tight" : "mt-2 text-[12.5px] leading-snug",
+            ].join(" ")}
+          >
+            {desc}
+          </p>
         </div>
       </div>
     </Html>
@@ -189,9 +220,11 @@ function PartLabel({
 
 export function SwordModel({
   exploded,
+  compact,
   pointer,
 }: {
   exploded: boolean;
+  compact: boolean;
   pointer: React.RefObject<{ x: number; y: number }>;
 }) {
   const root = useRef<Group>(null);
@@ -236,7 +269,7 @@ export function SwordModel({
     if (tang.current) tang.current.material.opacity = 0.2 + ease * 0.8;
 
     if (scabbard.current) {
-      scabbard.current.position.x = 2.15 + ease * 1.1;
+      scabbard.current.position.x = 2.15 + ease * (compact ? 0.35 : 1.1);
       scabbard.current.rotation.z = -ease * 0.12;
     }
 
@@ -275,17 +308,20 @@ export function SwordModel({
           <meshStandardMaterial {...darkSteelProps} transparent opacity={0.25} />
         </mesh>
         {labelsMounted && <PartLabel
-          position={[0.55, -BLADE_LEN * 0.66, 0]}
+          position={[0.55, -BLADE_LEN * 0.8, 0]}
           title="Głownia"
+          compactAlign="left"
           desc={PART.glownia.desc}
           visible={exploded}
+          compact={compact}
           align="right"
         />}
         {labelsMounted && <PartLabel
-          position={[0.5, 0.35, 0]}
+          position={[0.5, -0.8, 0]}
           title="Trzpień"
           desc={PART.trzpien.desc}
           visible={exploded}
+          compact={compact}
           align="right"
         />}
       </group>
@@ -300,6 +336,7 @@ export function SwordModel({
           title="Jelec"
           desc={PART.jelec.desc}
           visible={exploded}
+          compact={compact}
         />}
       </group>
 
@@ -320,6 +357,7 @@ export function SwordModel({
           title="Rękojeść"
           desc={PART.rekojesc.desc}
           visible={exploded}
+          compact={compact}
           align="right"
         />}
       </group>
@@ -345,6 +383,7 @@ export function SwordModel({
           title="Głowica"
           desc={PART.glowica.desc}
           visible={exploded}
+          compact={compact}
         />}
       </group>
 
@@ -383,8 +422,10 @@ export function SwordModel({
         {labelsMounted && <PartLabel
           position={[0.7, 4.2, 0]}
           title="Pochwa"
+          compactAlign="left"
           desc={PART.pochwa.desc}
           visible={exploded}
+          compact={compact}
           align="right"
         />}
       </group>
